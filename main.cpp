@@ -3,7 +3,7 @@
 #include <iostream>
 #include <utility>
 #include <boost/compute/core.hpp>
-
+#include <optional>
 
 using namespace boost::program_options;
 

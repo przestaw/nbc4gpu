@@ -33,6 +33,29 @@ sudo make install
 
 source : http://boostorg.github.io/compute/boost_compute/getting_started.html
 
+### Setup msvc
+1. Pobranie dystrybucji boost
+	
+	call bootstrap.bat
+	b2 --address-model=64 --architecture=x86 --runtime-link=static,shared --link=static threading=multi --build-dir=build\x64 install -j4
+	b2 install  --prefix="C:\boost"
+
+2. pobranie sterowników openCL, instalacja i konfiguracja
+
+	zależne dla GPU, dla NVIDIA razem ze sterownikami CUDA [niejawnie]
+
+3. pobranie i instalacja makefile, cmake, doxygen
+4. pobranie boost compute
+	
+	cmake --build . --target install
+
+5. pobranie projektu i wykonanie polecenia (celu stworzenia konfiguracji dla kompilatora microsoft):
+
+	cmake -DBOOST_ROOT=C:\boost -DBOOST_LIBRARYDIR=C:\boost\lib -G "Visual Studio 16"
+
+6. Otwarcie rozwiązania w Visual Studio?
+
+
 ##### Reference:
 
 http://boostorg.github.io/compute/

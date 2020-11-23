@@ -9,7 +9,6 @@ set(PROJECT_DESCRIPTION "naive bayes classifier for GPU")
 set(EXECUTABLE ${PROJECT_NAME}-program)
 set(LIBRARY ${PROJECT_NAME}-lib)
 set(TEST ${PROJECT_NAME}-test)
-set(CHECK ${TEST}-check)
 
 # Add custom cmake modules
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules/finders")
@@ -33,13 +32,8 @@ find_package(BoostCompute REQUIRED)
 find_package(Boost COMPONENTS program_options unit_test_framework REQUIRED)
 find_package(Threads REQUIRED)
 find_package(OpenCL REQUIRED)
-include_directories(${OpenCL_INCLUDE_DIRS})
-link_directories(${OpenCL_LIBRARY})
-
 
 set(EXTERNAL_LIBS "Boost::program_options" "Boost::unit_test_framework" "Threads::Threads" ${OpenCL_LIBRARY})
-
-include_directories(${BoostCompute_INCLUDE_DIRS})
 
 
 # CXX standard
@@ -85,11 +79,9 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # find and set toolchain
     include(GNUtoolchain)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    # TODO test
-    message("MSVC support is not tested")
 
     # using MSVC (experimental)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /std:c++latest /W4 /Wall")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /W2")
 endif ()
 
@@ -105,6 +97,9 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}
 # include dirs
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${BOOST_INCLUDE_DIR})
+include_directories(${BoostCompute_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+include_directories(${OpenCL_INCLUDE_DIRS})
+link_directories(${OpenCL_LIBRARY})
 
 # find source files
 file(GLOB_RECURSE EXT_SRC "${PROJECT_SOURCE_DIR}/external/*.hpp")
@@ -118,7 +113,6 @@ add_subdirectory("test")
 
 # library
 add_library(${LIBRARY} ${LIB_SRC} ${LIB_INC} ${LIB_TMP})
-add_dependencies(${LIBRARY} ${CHECK})
 
 # Program executable
 add_executable(${EXECUTABLE} main.cpp)
