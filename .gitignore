@@ -65,3 +65,17 @@ CMakeCache.txt
 *.log
 *.synctex.gz
 *.toc
+
+# windows project
+*.vcxproj
+*.filters
+/DartConfiguration.tcl
+/test/CMakeFiles/*
+/nbc4gpu.sln
+*CTestTestfile.cmake
+*cmake_install.cmake
+*.user
+/x64/*
+/nbc4gpu-*.dir/*
+/nbc4gpu-*.dir/*
+/.vs/nbc4gpu/*

@@ -102,11 +102,11 @@ include_directories(${OpenCL_INCLUDE_DIRS})
 link_directories(${OpenCL_LIBRARY})
 
 # find source files
-file(GLOB_RECURSE EXT_SRC "${PROJECT_SOURCE_DIR}/external/*.hpp")
+file(GLOB_RECURSE EXT_SRC ${PROJECT_SOURCE_DIR}/external/*.hpp)
 file(GLOB_RECURSE LIB_SRC ${PROJECT_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE LIB_INC ${PROJECT_SOURCE_DIR}/include/*.h)
 file(GLOB_RECURSE LIB_TMP ${PROJECT_SOURCE_DIR}/include/*.hpp)
-file(GLOB_RECURSE TEST_SRC "${PROJECT_SOURCE_DIR}/test/*.cpp")
+file(GLOB_RECURSE TEST_SRC ${PROJECT_SOURCE_DIR}/test/*.cpp)
 
 # Include src and test for library and test-check
 add_subdirectory("test")
