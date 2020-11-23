@@ -34,26 +34,35 @@ sudo make install
 source : http://boostorg.github.io/compute/boost_compute/getting_started.html
 
 ### Setup msvc
-1. Pobranie dystrybucji boost
+1 Pobranie dystrybucji boost
+
+```
+call bootstrap.bat
+b2 --address-model=64 --architecture=x86 --runtime-link=static,shared --link=static threading=multi --build-dir=build\x64 install -j4
+b2 install  --prefix="C:\boost"
+```
 	
-	call bootstrap.bat
-	b2 --address-model=64 --architecture=x86 --runtime-link=static,shared --link=static threading=multi --build-dir=build\x64 install -j4
-	b2 install  --prefix="C:\boost"
+2 pobranie sterowników openCL, instalacja i konfiguracja
 
-2. pobranie sterowników openCL, instalacja i konfiguracja
-
-	zależne dla GPU, dla NVIDIA razem ze sterownikami CUDA [niejawnie]
-
-3. pobranie i instalacja makefile, cmake, doxygen
-4. pobranie boost compute
+```
+zależne dla GPU, dla NVIDIA razem ze sterownikami CUDA [niejawnie]
+```
 	
-	cmake --build . --target install
+3 pobranie i instalacja makefile, cmake, doxygen
 
-5. pobranie projektu i wykonanie polecenia (celu stworzenia konfiguracji dla kompilatora microsoft):
+4 pobranie boost compute
 
-	cmake -DBOOST_ROOT=C:\boost -DBOOST_LIBRARYDIR=C:\boost\lib -G "Visual Studio 16"
+```
+cmake --build . --target install
+```
+	
+5 pobranie projektu i wykonanie polecenia (celu stworzenia konfiguracji dla kompilatora microsoft):
 
-6. Otwarcie rozwiązania w Visual Studio?
+```
+cmake -DBOOST_ROOT=C:\boost -DBOOST_LIBRARYDIR=C:\boost\lib -G "Visual Studio 16"
+```
+	
+6 Otwarcie rozwiązania w Visual Studio?
 
 
 ##### Reference:
@@ -109,8 +118,6 @@ https://www.boost.org/doc/libs/1_74_0/libs/compute/doc/html/index.html
   
 - Project targets :
 
-    - **build-all** - builds all available targets
-    - **BGM-asm-test** - UnitTest made with *boost*
-    - **BGM-asm-check** - dummy target for test run during library compilation
-    - **BGM-asm-library** - library containing all classes excluding parameters
-    - **BGM-asm-program** - program available for command line usage
+    - **nbc4gpu-test** - UnitTest made with *boost*
+    - **nbc4gpu-library** - library containing all classes excluding parameters
+    - **nbc4gpu-program** - program available for command line usage
