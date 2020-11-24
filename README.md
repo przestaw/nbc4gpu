@@ -34,7 +34,7 @@ sudo make install
 source : http://boostorg.github.io/compute/boost_compute/getting_started.html
 
 ### Setup msvc
-1 Pobranie dystrybucji boost
+1 Download, compile and install boost libaries 
 
 ```
 call bootstrap.bat
@@ -42,27 +42,29 @@ b2 --address-model=64 --architecture=x86 --runtime-link=static,shared --link=sta
 b2 install  --prefix="C:\boost"
 ```
 	
-2 pobranie sterowników openCL, instalacja i konfiguracja
+2 Download and install desired openCL driver 
 
 ```
-zależne dla GPU, dla NVIDIA razem ze sterownikami CUDA [niejawnie]
+depends on GPU, for NVIDIA OpenCL is shipped with CUDA driver [Without explicit information !!!]
 ```
 	
-3 pobranie i instalacja makefile, cmake, doxygen
+3 Download and install makefile [e.g. with msys], cmake, doxygen
 
-4 pobranie boost compute
+4 Download and install boost.compute 
 
 ```
 cmake --build . --target install
 ```
 	
-5 pobranie projektu i wykonanie polecenia (celu stworzenia konfiguracji dla kompilatora microsoft):
+5 Clone project and run CMD (to create microsoft Visual Studio project, solution etc):
 
 ```
 cmake -DBOOST_ROOT=C:\boost -DBOOST_LIBRARYDIR=C:\boost\lib -G "Visual Studio 16"
 ```
 	
-6 Otwarcie rozwiązania w Visual Studio?
+6 Open project in visual studio 
+
+7 Configure import, include and linker paths for project
 
 
 ##### Reference:
@@ -72,11 +74,17 @@ https://www.boost.org/doc/libs/1_74_0/libs/compute/doc/html/index.html
 
 ### Program Usage
 
-##### Options:
+### Options:
 
-## ```TODO```
+## ```ToDo : fill when implemented```
 
 ### Build instructions
+
+- Project targets :
+
+    - **nbc4gpu-test** - UnitTest made with *boost*
+    - **nbc4gpu-library** - library containing all classes excluding parameters
+    - **nbc4gpu-program** - program available for command line usage
 
 - Project uses *boost* library for testing and parsing program parameters 
 - When calling CMake for the first time, all needed compiler options must be
@@ -115,9 +123,3 @@ https://www.boost.org/doc/libs/1_74_0/libs/compute/doc/html/index.html
 - For full documentation consult the CMake manual or execute
     ```
     cmake --help-variable VARIABLE_NAME 
-  
-- Project targets :
-
-    - **nbc4gpu-test** - UnitTest made with *boost*
-    - **nbc4gpu-library** - library containing all classes excluding parameters
-    - **nbc4gpu-program** - program available for command line usage

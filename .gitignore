@@ -22,6 +22,7 @@ bin/*
 [Ll]og/*
 
 #CMake files
+*CMakeFiles/*
 CMakeFiles/*
 cmake-*
 CMakeCache.txt

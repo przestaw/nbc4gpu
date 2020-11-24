@@ -1,9 +1,13 @@
+#include <project_defines.h>
 #include <boost/program_options.hpp>
 #include <error/exeception.h>
 #include <iostream>
 #include <utility>
-#include <boost/compute/core.hpp>
 #include <optional>
+// Boost.compute has a lot of errors detected by Clang/GCC
+DIAGNOSTIC_PUSH
+#include <boost/compute/core.hpp>
+DIAGNOSTIC_POP
 
 using namespace boost::program_options;
 
@@ -41,11 +45,11 @@ inline std::optional<ProgramParams> parseParams(int argc, char *argv[]) {
       std::cout << desc << '\n';
       return std::optional<ProgramParams>();
     } else {
-      auto checkPresence = [&vm](const std::string &name) {
-        if (!vm.count(name)) {
-          throw nbc4gpu::error::missing_argument(name);
-        }
-      };
+//      auto checkPresence = [&vm](const std::string &name) {
+//        if (!vm.count(name)) {
+//          throw nbc4gpu::error::missing_argument(name);
+//        }
+//      };
 
       bool verbose = vm.count("verbose");
 
