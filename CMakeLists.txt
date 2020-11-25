@@ -123,3 +123,30 @@ target_link_libraries(${EXECUTABLE} ${EXTERNAL_LIBS})
 # Clang Format
 clangformat_setup(${LIB_SRC} ${LIB_INC} ${TEST_SRC} ${LIB_TMP} ${EXT_SRC} main.cpp)
 add_custom_target(build-all DEPENDS format-project ${PROGRAM} ${LIB} ${CHECK} ${TEST})
+
+# Doxygen
+if(DOXYGEN_FOUND)
+    set(DOXYGEN_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/doc/doxygen)
+
+    set(DOXYGEN_PROJECT_NAME ${PROJECT_NAME})
+    set(DOXYGEN_PROJECT_BRIEF ${PROJECT_DESCRIPTION})
+
+    set(DOXYGEN_HTML_COLORSTYLE_HUE 123)
+    set(DOXYGEN_HTML_COLORSTYLE_SAT 69)
+    set(DOXYGEN_HTML_COLORSTYLE_GAMMA 240)
+
+    set(DOXYGEN_HTML_DYNAMIC_MENUS YES)
+    set(DOXYGEN_HTML_DYNAMIC_SECTIONS YES)
+
+    set(DOXYGEN_FILE_PATTERNS *.h *.c *.cpp *.hpp *.cc *.cxx *.hxx *.hh)
+    set(DOXYGEN_EXTRACT_ALL YES)
+
+    set(DOXYGEN_GENERATE_TREEVIEW YES)
+    set(DOXYGEN_MARKDOWN_SUPPORT YES)
+
+    set(DOXYGEN_GENERATE_LATEX NO)
+    set(DOXYGEN_GENERATE_HTML YES)
+    set(DOXYGEN_GENERATE_MAN NO)
+
+    doxygen_add_docs(${PROJECT_NAME}-doxygen ${LIB_INC} ${LIB_SRC} ${LIB_TMP})
+endif()

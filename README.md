@@ -1,6 +1,59 @@
 # Naive Bayes Classifier prototype
 ## *Naive Bayes Classifier on GPU using boost.compute*
 
+### Program Usage
+
+### Options:
+
+## ```ToDo : fill when implemented```
+
+### Build instructions
+
+- Project targets :
+
+    - **nbc4gpu-test** - UnitTest made with *boost*
+    - **nbc4gpu-library** - library containing all classes excluding parameters
+    - **nbc4gpu-program** - program available for command line usage
+    - **nbc4gpu-doxygen** - *available if doxygen is present* - generates html documentation 
+
+- Project uses *boost* library for testing and parsing program parameters 
+- When calling CMake for the first time, all needed compiler options must be
+  specified on the command line.  After this initial call to CMake, the compiler
+  definitions must not be included for further calls to CMake.  Other options
+  can be specified on the command line multiple times including all definitions
+  in the build options section below.
+- Example of configuring, building, reconfiguring, rebuilding:
+
+  ````
+  # Initial configuration
+    $ mkdir build
+    $ cd build
+    $ cmake -DCMAKE_CXX_COMPILER=clang++ ..  
+    $ make
+    ...
+  # Second configuration
+    $ make clean
+    $ cmake -DCMAKE_BUILD_TYPE=Debug ..                               
+    $ make
+    ...
+  # Third configuration
+    $ rm -rf *
+    $ cmake -DCMAKE_CXX_COMPILER=g++ ..        
+    $ make
+
+
+- CMake variables
+    - **CMAKE_BUILD_TYPE** = ``Release|Debug``
+      Build type can be ``Release``, ``Debug`` which chooses
+      the optimization level and presence of debugging symbols.
+    
+    - **CMAKE_CXX_COMPILER** = <C++ compiler name>
+      Specify the C++ compiler.
+  
+- For full documentation consult the CMake manual or execute
+    ```
+    cmake --help-variable VARIABLE_NAME 
+
 ### Setup project for ubuntu 20.04
 
 #### install OpenCL
@@ -69,57 +122,8 @@ cmake -DBOOST_ROOT=C:\boost -DBOOST_LIBRARYDIR=C:\boost\lib -G "Visual Studio 16
 
 ##### Reference:
 
+https://www.doxygen.nl/index.html
+https://cmake.org/
 http://boostorg.github.io/compute/
 https://www.boost.org/doc/libs/1_74_0/libs/compute/doc/html/index.html
 
-### Program Usage
-
-### Options:
-
-## ```ToDo : fill when implemented```
-
-### Build instructions
-
-- Project targets :
-
-    - **nbc4gpu-test** - UnitTest made with *boost*
-    - **nbc4gpu-library** - library containing all classes excluding parameters
-    - **nbc4gpu-program** - program available for command line usage
-
-- Project uses *boost* library for testing and parsing program parameters 
-- When calling CMake for the first time, all needed compiler options must be
-  specified on the command line.  After this initial call to CMake, the compiler
-  definitions must not be included for further calls to CMake.  Other options
-  can be specified on the command line multiple times including all definitions
-  in the build options section below.
-- Example of configuring, building, reconfiguring, rebuilding:
-
-  ````
-  # Initial configuration
-    $ mkdir build
-    $ cd build
-    $ cmake -DCMAKE_CXX_COMPILER=clang++ ..  
-    $ make
-    ...
-  # Second configuration
-    $ make clean
-    $ cmake -DCMAKE_BUILD_TYPE=Debug ..                               
-    $ make
-    ...
-  # Third configuration
-    $ rm -rf *
-    $ cmake -DCMAKE_CXX_COMPILER=g++ ..        
-    $ make
-
-
-- CMake variables
-    - **CMAKE_BUILD_TYPE** = ``Release|Debug``
-      Build type can be ``Release``, ``Debug`` which chooses
-      the optimization level and presence of debugging symbols.
-    
-    - **CMAKE_CXX_COMPILER** = <C++ compiler name>
-      Specify the C++ compiler.
-  
-- For full documentation consult the CMake manual or execute
-    ```
-    cmake --help-variable VARIABLE_NAME 

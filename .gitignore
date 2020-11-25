@@ -8,6 +8,7 @@ __pycache__/
 *$py.class
 
 #directories
+/doc/doxygen/*
 bin/*
 *Doxygen/
 .idea/*
@@ -80,3 +81,4 @@ CMakeCache.txt
 /nbc4gpu-*.dir/*
 /nbc4gpu-*.dir/*
 /.vs/nbc4gpu/*
+
