@@ -31,7 +31,7 @@ namespace nbc4gpu {
      */
     double predict(const Record &record);
   private:
-    int filed;
+    int field;
   };
 } // namespace nbc4gpu
 
