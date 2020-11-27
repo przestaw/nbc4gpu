@@ -13,5 +13,6 @@ using namespace boost::compute;
 nbc4gpu::Classifier::Classifier() : field(0) {}
 
 double nbc4gpu::Classifier::predict(const nbc4gpu::Classifier::Record& record) {
+  UNUSED_VAL(record);
   throw nbc4gpu::error::runtime_exception("Not implemented");
 }
