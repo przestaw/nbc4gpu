@@ -7,8 +7,11 @@
 // Boost.compute has a lot of errors detected by Clang/GCC
 DIAGNOSTIC_PUSH
 #include <boost/compute/algorithm/accumulate.hpp>
+#include <boost/compute/algorithm/transform.hpp>
 #include <boost/compute/container/vector.hpp>
 #include <boost/compute/core.hpp>
+#include <boost/compute/lambda.hpp>
+#include <classifier/learnColumn.h>
 DIAGNOSTIC_POP
 
 namespace options = boost::program_options;
@@ -63,16 +66,6 @@ inline std::optional<ProgramParams> parseParams(int argc, char *argv[]) {
   }
 }
 
-double avg(const std::vector<double> &col) {
-  // transfer the values to the device
-  // automatic -> TODO : use command queue and wait for result
-  compute::vector<double> device_vector = col;
-  double sum =
-      compute::accumulate(device_vector.begin(), device_vector.end(), 0);
-
-  return sum / static_cast<double>(col.size());
-}
-
 /**
  * Main function
  * @return EXIT_SUCCESS on success
@@ -98,15 +91,21 @@ int main(int argc, char *argv[]) {
       std::cout << " (platform: " << device.platform().name() << ")"
                 << std::endl;
 
-      std::vector<double> vec(50000);
-      std::generate(vec.begin(), vec.end(), []() { return rand() % 50; });
+      //      std::vector<double> vec(50000);
+      //      std::generate(vec.begin(), vec.end(), []() { return rand() % 50;
+      //      });
+      std::vector<double> vec = {1, 1, 1, 2, 2, 2};
 
-      //std::for_each(vec.begin(), vec.end(), [](double val){ std::cout << val << ", " ;});
-      std::cout << std::endl << "avg GPU = " << avg(vec);
+      nbc4gpu::GPULearnColumn<double> learner =
+          nbc4gpu::GPULearnColumn<double>(vec, queue);
+      const auto res = learner();
+      std::cout << std::endl
+                << "GPU avg = " << res.first << " std dev = " << res.second;
 
       double sum = 0.0;
-      sum = std::accumulate(vec.begin(), vec.end(), sum);
-      std::cout << std::endl << "avg CPU = " << sum/static_cast<double>(vec.size());
+      sum        = std::accumulate(vec.begin(), vec.end(), sum);
+      std::cout << std::endl
+                << "CPU avg = " << sum / static_cast<double>(vec.size());
     }
     return EXIT_SUCCESS;
   }

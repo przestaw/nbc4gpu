@@ -5,8 +5,8 @@
 #define CL_TARGET_OPENCL_VERSION 120
 
 #if __GNUG__ || __clang__
-
-#define DIAGNOSTIC_PUSH _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wshadow\"") _Pragma("GCC diagnostic ignored \"-Wignored-qualifiers\"") // boost computes has a lot of warnings
+// boost computes has a lot of warnings
+#define DIAGNOSTIC_PUSH _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wshadow\"") _Pragma("GCC diagnostic ignored \"-Wignored-qualifiers\"") _Pragma("GCC diagnostic ignored \"-Wdeprecated-copy\"")
 #define DIAGNOSTIC_POP _Pragma("GCC diagnostic pop") // restore diagnostics
 
 #else
