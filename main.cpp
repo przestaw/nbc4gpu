@@ -87,14 +87,14 @@ int main(int argc, char *argv[]) {
       std::cout << "RUNNING\n";
 
       // print the device's name and platform
-      std::cout << "hello from " << device.name();
-      std::cout << " (platform: " << device.platform().name() << ")"
-                << std::endl;
+      std::cout << "Device:  " << device.name()
+                << "\n(platform: " << device.platform().vendor() << " - "
+                << device.platform().version() << ")" << std::endl;
 
-      //      std::vector<double> vec(50000);
-      //      std::generate(vec.begin(), vec.end(), []() { return rand() % 50;
-      //      });
-      std::vector<double> vec = {1, 1, 1, 2, 2, 2};
+      std::vector<double> vec(5000000);
+      std::generate(vec.begin(), vec.end(), []() { return rand() % 50;
+      });
+      //std::vector<double> vec = {1, 1, 1, 2, 2, 2};
 
       nbc4gpu::GPULearnColumn<double> learner =
           nbc4gpu::GPULearnColumn<double>(vec, queue);
