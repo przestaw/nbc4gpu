@@ -5,7 +5,7 @@
 DIAGNOSTIC_PUSH
 #include <boost/compute.hpp>
 DIAGNOSTIC_POP
-#include <classifier/classifier.h>
+#include "classifier.h"
 #include <error/exeception.h>
 
 using namespace boost::compute;

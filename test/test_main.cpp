@@ -1,7 +1,3 @@
-//
-// Created by przemek on 13.03.2020.
-//
-
 #ifndef WIN32
 #define BOOST_TEST_DYN_LINK
 #endif
