@@ -72,10 +72,10 @@ namespace nbc4gpu {
     boost::compute::future<void> fAvg = boost::compute::copy_async(
         col_.begin(), col_.end(), avgVector.begin(), queue_);
     // reduce is destructive, need to copy twice
-    boost::compute::vector<double> stdDevVector(col_.size(),
+    boost::compute::vector<double> varianceVector(col_.size(),
                                                 queue_.get_context());
     boost::compute::future<void> fStdDev = boost::compute::copy_async(
-        col_.begin(), col_.end(), stdDevVector.begin(), queue_);
+        col_.begin(), col_.end(), varianceVector.begin(), queue_);
 
     double avg = 0;
     fAvg.wait(); // Wait for data to be copied
@@ -84,25 +84,25 @@ namespace nbc4gpu {
     avg = avg / static_cast<double>(col_.size());
 
     fStdDev.wait(); // Wait for data to be copied
-    boost::compute::transform(stdDevVector.begin(),
-                              stdDevVector.end(),
-                              stdDevVector.begin(),
+    boost::compute::transform(varianceVector.begin(),
+                              varianceVector.end(),
+                              varianceVector.begin(),
                               boost::compute::lambda::_1 - avg,
                               queue_);
 
-    boost::compute::transform(stdDevVector.begin(),
-                              stdDevVector.end(),
-                              stdDevVector.begin(),
+    boost::compute::transform(varianceVector.begin(),
+                              varianceVector.end(),
+                              varianceVector.begin(),
                               boost::compute::lambda::_1
                                   * boost::compute::lambda::_1,
                               queue_);
 
-    double stdDev = 0;
+    double variance = 0;
     boost::compute::reduce(
-        stdDevVector.begin(), stdDevVector.end(), &stdDev, queue_);
-    stdDev = sqrt(stdDev * (1 / static_cast<double>(col_.size() - 1)));
+        varianceVector.begin(), varianceVector.end(), &variance, queue_);
+    variance = variance * (1 / static_cast<double>(col_.size() - 1));
 
-    return std::make_pair(avg, stdDev);
+    return std::make_pair(avg, variance);
   }
 } // namespace nbc4gpu
 
