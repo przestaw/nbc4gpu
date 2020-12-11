@@ -77,6 +77,35 @@ namespace nbc4gpu {
   template <typename ValueType, typename PropabilityType>
   void GPUCalculateClassP<ValueType, PropabilityType>::calcPropability() {
     // TODO
+    // exponent = exp(-((x-avg)^ 2 / (2 * variance )))
+    // base =  (1 / (sqrt(2 * pi) * variance))
+    // return e1*b1*e2*b2.... : e in exponent, b in base
+
+    std::vector<ValueType> avgs;
+    std::vector<ValueType> variances;
+    for (const auto iter : statistics_){
+      avgs.emplace_back(iter.first);
+      variances.emplace_back(iter.second);
+    }
+
+    // 1. transfer record, avg & means to device
+
+    // using compute::transform
+    // 1.1. calc - (x - avg)^2
+    // 1.2. calc  1 / (2*variance)
+    // 1.3. calc  1.1*1.2 = exponent
+
+    // 2. calc base
+    static const ValueType sqr2pi = sqrt(2 * 3.141);
+    // 2.1 calc variance*sqr2pi
+    // 2.2 calc 1/(variance*sqr2pi)
+
+    // 3. summarize
+    // using accumulate or on CPU
+    // 3.1 multiply all base and exponent values
+
+    // 4. save propability
+
   }
 } // namespace nbc4gpu
 

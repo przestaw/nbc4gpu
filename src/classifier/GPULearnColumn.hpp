@@ -19,7 +19,7 @@ DIAGNOSTIC_POP
 namespace nbc4gpu {
   template <typename ValueType> class GPULearnColumn {
   public:
-    using AvgStdDev = std::pair<ValueType, ValueType>;
+    using AvgAndVariance = std::pair<ValueType, ValueType>;
 
     /**
      * Constructor
@@ -33,13 +33,13 @@ namespace nbc4gpu {
      * Calculates or returns average and standard deviation
      * @return average and standard deviation
      */
-    AvgStdDev operator()();
+    AvgAndVariance operator()();
 
   private:
-    AvgStdDev learn();
+    AvgAndVariance learn();
 
     bool resSet_;
-    AvgStdDev result_;
+    AvgAndVariance result_;
     std::vector<ValueType> &col_;
     boost::compute::command_queue &queue_;
     std::mutex calculationGuard;
@@ -52,7 +52,7 @@ namespace nbc4gpu {
       : resSet_(false), col_(col), queue_(queue) {}
 
   template <typename ValueType>
-  typename GPULearnColumn<ValueType>::AvgStdDev
+  typename GPULearnColumn<ValueType>::AvgAndVariance
   GPULearnColumn<ValueType>::operator()() {
     if (!resSet_) {
       std::unique_lock lock(calculationGuard);
@@ -65,7 +65,7 @@ namespace nbc4gpu {
   }
 
   template <typename ValueType>
-  typename GPULearnColumn<ValueType>::AvgStdDev
+  typename GPULearnColumn<ValueType>::AvgAndVariance
   GPULearnColumn<ValueType>::learn() {
     // transfer the values to the device
     boost::compute::vector<double> avgVector(col_.size(), queue_.get_context());

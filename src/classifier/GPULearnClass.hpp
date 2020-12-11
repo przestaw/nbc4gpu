@@ -14,7 +14,7 @@ namespace nbc4gpu {
   public:
     using Learner = nbc4gpu::GPULearnColumn<ValueType>;
     using Statistics =
-        std::vector<typename Learner::AvgStdDev>; //!< row containing statistic
+        std::vector<typename Learner::AvgAndVariance>; //!< row containing statistic
                                                   //!< in each column
 
     using Column  = std::vector<ValueType>; //!< contains value for each row
