@@ -6,13 +6,13 @@
 #include <utility>
 // Boost.compute has a lot of errors detected by Clang/GCC
 DIAGNOSTIC_PUSH
-#include "src/classifier/learnColumn.h"
 #include <boost/compute/algorithm/accumulate.hpp>
 #include <boost/compute/algorithm/transform.hpp>
 #include <boost/compute/container/vector.hpp>
 #include <boost/compute/core.hpp>
 #include <boost/compute/lambda.hpp>
 DIAGNOSTIC_POP
+#include <classifier/GPULearnColumn.hpp>
 
 namespace options = boost::program_options;
 namespace compute = boost::compute;

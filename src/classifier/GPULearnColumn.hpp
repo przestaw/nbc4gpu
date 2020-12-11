@@ -2,8 +2,8 @@
 // Created by przestaw on 04.12.2020.
 //
 
-#ifndef NBC4GPU_LEARNCOLUMN_H
-#define NBC4GPU_LEARNCOLUMN_H
+#ifndef NBC4GPU_GPULEARNCOLUMN_HPP
+#define NBC4GPU_GPULEARNCOLUMN_HPP
 
 #include <project_defines.h>
 DIAGNOSTIC_PUSH
@@ -13,6 +13,8 @@ DIAGNOSTIC_PUSH
 #include <boost/compute/core.hpp>
 #include <boost/compute/lambda.hpp>
 DIAGNOSTIC_POP
+#include <mutex>
+
 
 namespace nbc4gpu {
   template <typename ValueType> class GPULearnColumn {
@@ -34,12 +36,13 @@ namespace nbc4gpu {
     AvgStdDev operator()();
 
   private:
+    AvgStdDev learn();
+
     bool resSet_;
     AvgStdDev result_;
     std::vector<ValueType> &col_;
     boost::compute::command_queue &queue_;
-
-    AvgStdDev learn();
+    std::mutex calculationGuard;
   };
 
   template <typename ValueType>
@@ -52,8 +55,11 @@ namespace nbc4gpu {
   typename GPULearnColumn<ValueType>::AvgStdDev
   GPULearnColumn<ValueType>::operator()() {
     if (!resSet_) {
-      result_ = learn();
-      resSet_ = true;
+      std::unique_lock lock(calculationGuard);
+      if (!resSet_) {
+        result_ = learn();
+        resSet_ = true;
+      }
     }
     return result_;
   }
@@ -100,4 +106,4 @@ namespace nbc4gpu {
   }
 } // namespace nbc4gpu
 
-#endif // NBC4GPU_LEARNCOLUMN_H
+#endif // NBC4GPU_GPULEARNCOLUMN_HPP
