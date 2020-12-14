@@ -54,7 +54,8 @@ namespace nbc4gpu {
       GPUCalculateClassP::Record record,
       GPUCalculateClassP::Statistics statistics,
       boost::compute::command_queue &queue)
-      : record_(record), statistics_(statistics), queue_(queue), calculated(false) {
+      : record_(record), statistics_(statistics), queue_(queue),
+        calculated(false) {
     if (record_.size() != statistics_.size()) {
       throw nbc4gpu::error::MismatchedSize(
           " record and dataset have diffrent sizes of columns");
@@ -83,7 +84,7 @@ namespace nbc4gpu {
 
     std::vector<ValueType> avgs;
     std::vector<ValueType> variances;
-    for (const auto iter : statistics_){
+    for (const auto iter : statistics_) {
       avgs.emplace_back(iter.first);
       variances.emplace_back(iter.second);
     }
@@ -105,7 +106,6 @@ namespace nbc4gpu {
     // 3.1 multiply all base and exponent values
 
     // 4. save propability
-
   }
 } // namespace nbc4gpu
 

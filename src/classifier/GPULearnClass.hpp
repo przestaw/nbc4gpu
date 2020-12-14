@@ -5,17 +5,18 @@
 #ifndef NBC4GPU_GPULEARNCLASS_HPP
 #define NBC4GPU_GPULEARNCLASS_HPP
 
-#include <project_defines.h>
 #include <classifier/GPULearnColumn.hpp>
 #include <mutex>
+#include <project_defines.h>
 
 namespace nbc4gpu {
   template <typename ValueType> class GPULearnClass {
   public:
     using Learner = nbc4gpu::GPULearnColumn<ValueType>;
     using Statistics =
-        std::vector<typename Learner::AvgAndVariance>; //!< row containing statistic
-                                                  //!< in each column
+        std::vector<typename Learner::AvgAndVariance>; //!< row containing
+                                                       //!< statistic in each
+                                                       //!< column
 
     using Column  = std::vector<ValueType>; //!< contains value for each row
     using Dataset = std::vector<Column>; //!< contains all rows for given class
@@ -48,21 +49,24 @@ namespace nbc4gpu {
     size_t getUnlearned();
 
     Dataset dataset_;
+    const ValueType classId_;
+
+    boost::compute::command_queue &queue_;
+
+    std::mutex guard;
+    size_t unlearned;
+
     bool calculated;
     std::mutex calculationGuard;
     Statistics record_;
-    const ValueType classId_;
-    boost::compute::command_queue &queue_;
-    std::mutex guard;
-    size_t unlearned;
   };
 
   template <typename ValueType>
   GPULearnClass<ValueType>::GPULearnClass(GPULearnClass::Dataset dataset,
                                           ValueType classId,
                                           boost::compute::command_queue &queue)
-      : dataset_(std::move(dataset)), calculated(false), classId_(classId),
-        queue_(queue), unlearned(0) {}
+      : dataset_(std::move(dataset)), classId_(classId), queue_(queue),
+        unlearned(0), calculated(false), record_(dataset_.size()) {}
 
   template <typename ValueType>
   typename GPULearnClass<ValueType>::Statistics
