@@ -15,3 +15,4 @@
 ### Problemy na etapie implementacji 
 
 - Błędy kompilacji dynamiczne [riuntime] w przypadku użytkowania liczb ujemnych ? [brak szczegółowych informacji o powodach wystąpienia, brak info w dokumentacji]
+- Dostępność w zasadzie jedynie pobierznej dokumentacji zaimplementowanych makr [kompilowanych do openCl jak transform, reduce, accumulate]

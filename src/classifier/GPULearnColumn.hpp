@@ -68,11 +68,11 @@ namespace nbc4gpu {
   typename GPULearnColumn<ValueType>::AvgAndVariance
   GPULearnColumn<ValueType>::learn() {
     // transfer the values to the device
-    boost::compute::vector<double> avgVector(col_.size(), queue_.get_context());
+    boost::compute::vector<ValueType> avgVector(col_.size(), queue_.get_context());
     boost::compute::future<void> fAvg = boost::compute::copy_async(
         col_.begin(), col_.end(), avgVector.begin(), queue_);
     // reduce is destructive, need to copy twice
-    boost::compute::vector<double> varianceVector(col_.size(),
+    boost::compute::vector<ValueType> varianceVector(col_.size(),
                                                 queue_.get_context());
     boost::compute::future<void> fStdDev = boost::compute::copy_async(
         col_.begin(), col_.end(), varianceVector.begin(), queue_);
@@ -81,7 +81,7 @@ namespace nbc4gpu {
     fAvg.wait(); // Wait for data to be copied
 
     boost::compute::reduce(avgVector.begin(), avgVector.end(), &avg, queue_);
-    avg = avg / static_cast<double>(col_.size());
+    avg = avg / static_cast<ValueType>(col_.size());
 
     fStdDev.wait(); // Wait for data to be copied
     boost::compute::transform(varianceVector.begin(),
@@ -100,7 +100,7 @@ namespace nbc4gpu {
     double variance = 0;
     boost::compute::reduce(
         varianceVector.begin(), varianceVector.end(), &variance, queue_);
-    variance = variance * (1 / static_cast<double>(col_.size() - 1));
+    variance = variance * (1 / static_cast<ValueType>(col_.size() - 1));
 
     return std::make_pair(avg, variance);
   }

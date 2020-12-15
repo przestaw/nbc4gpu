@@ -77,10 +77,15 @@ namespace nbc4gpu {
 
   template <typename ValueType, typename PropabilityType>
   void GPUCalculateClassP<ValueType, PropabilityType>::calcPropability() {
-    // TODO
+    static const ValueType sqr2pi = sqrt(2 * 3.141);
     // exponent = exp(-((x-avg)^ 2 / (2 * variance )))
     // base =  (1 / (sqrt(2 * pi) * variance))
     // return e1*b1*e2*b2.... : e in exponent, b in base
+
+    // 1. transfer record, avg & means to device
+    boost::compute::vector<ValueType> recordVector(record_.size(), queue_.get_context());
+    boost::compute::future<void> fRec = boost::compute::copy_async(
+        record_.begin(), record_.end(), recordVector.begin(), queue_);
 
     std::vector<ValueType> avgs;
     std::vector<ValueType> variances;
@@ -89,20 +94,56 @@ namespace nbc4gpu {
       variances.emplace_back(iter.second);
     }
 
-    // 1. transfer record, avg & means to device
+    boost::compute::vector<ValueType> avgVector(avgs.size(), queue_.get_context());
+    boost::compute::future<void> fAvg = boost::compute::copy_async(
+        avgs.begin(), avgs.end(), avgVector.begin(), queue_);
+
+    boost::compute::vector<ValueType> varianceVector(variances.size(), queue_.get_context());
+    boost::compute::future<void> fVar = boost::compute::copy_async(
+        variances.begin(), variances.end(), varianceVector.begin(), queue_);
 
     // using compute::transform
     // 1.1. calc - (x - avg)^2
+    fRec.wait();
+    fAvg.wait();
+    boost::compute::transform(recordVector.begin(),
+                              recordVector.end(),
+                              avgVector.begin(),
+                              recordVector.begin(),
+                              boost::compute::lambda::_1 - boost::compute::lambda::_2,
+                              queue_);
+    boost::compute::transform(recordVector.begin(),
+                              recordVector.end(),
+                              recordVector.begin(),
+                              1.0 / (boost::compute::lambda::_1 * 2.0),
+                              queue_);
+
     // 1.2. calc  1 / (2*variance)
     // 1.3. calc  1.1*1.2 = exponent
+    fVar.wait();
+    boost::compute::transform(recordVector.begin(),
+                              recordVector.end(),
+                              varianceVector.begin(),
+                              recordVector.begin(),
+                              boost::compute::lambda::_1 / (boost::compute::lambda::_2 * 2.0),
+                              queue_);
+    // Note: RecordVector has (x-avg)^ 2 / (2 * variance ) values after operation above
 
     // 2. calc base
-    static const ValueType sqr2pi = sqrt(2 * 3.141);
+
     // 2.1 calc variance*sqr2pi
     // 2.2 calc 1/(variance*sqr2pi)
 
+    boost::compute::transform(varianceVector.begin(),
+                              varianceVector.end(),
+                              varianceVector.begin(),
+                              1.0 / (boost::compute::lambda::_1 * sqr2pi),
+                              queue_);
+
+    // Note: varianceVector has 1/(variance*sqr2pi) values after operation above
+
     // 3. summarize
-    // using accumulate or on CPU
+    // using accumulate or on CPU ??
     // 3.1 multiply all base and exponent values
 
     // 4. save propability
