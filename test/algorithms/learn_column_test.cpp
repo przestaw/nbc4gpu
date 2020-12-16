@@ -8,6 +8,19 @@ BOOST_AUTO_TEST_SUITE(nbc4gpu_TestSuite)
 
 BOOST_AUTO_TEST_SUITE(LearnColumn_TestSuite)
 
+BOOST_AUTO_TEST_CASE(PrecalulatedTest_Size0) {
+  boost::compute::device device = boost::compute::system::default_device();
+  boost::compute::context context(device);
+  boost::compute::command_queue queue(context, device);
+
+  std::vector<double> vec = {};
+
+  nbc4gpu::GPULearnColumn<double> learner =
+      nbc4gpu::GPULearnColumn<double>(vec, queue);
+
+  BOOST_CHECK_THROW(learner(), nbc4gpu::error::ZeroValuesProvided);
+}
+
 BOOST_AUTO_TEST_CASE(PrecalulatedTest_Size6) {
   boost::compute::device device = boost::compute::system::default_device();
   boost::compute::context context(device);

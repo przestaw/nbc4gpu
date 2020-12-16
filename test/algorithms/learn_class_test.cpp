@@ -9,11 +9,11 @@ BOOST_AUTO_TEST_SUITE(nbc4gpu_TestSuite)
 BOOST_AUTO_TEST_SUITE(LearnClass_TestSuite)
 
   BOOST_AUTO_TEST_CASE(PrecalulatedTest_Size0) {
-    boost::compute::device device = boost::compute::system::default_device();
-    boost::compute::context context(device);
-    boost::compute::command_queue queue(context, device);
+  boost::compute::device device = boost::compute::system::default_device();
+  boost::compute::context context(device);
+  boost::compute::command_queue queue(context, device);
 
-    std::vector<std::vector<double>> dataset = {};
+  std::vector<std::vector<double>> dataset = {};
 
     nbc4gpu::GPULearnClass<double> learner =
         nbc4gpu::GPULearnClass<double>(dataset, 1, queue);

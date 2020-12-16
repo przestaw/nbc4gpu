@@ -68,7 +68,7 @@ namespace nbc4gpu {
   template <typename ValueType, typename PropabilityType>
   ValueType GPUCalculateClassP<ValueType, PropabilityType>::calcPropability(
       const Record& record) {
-    static const ValueType sqr2pi = sqrt(2 * 3.141);
+    static const ValueType sqr2pi = sqrt(2 * 3.14159265);
     // exponent = exp(-((x-avg)^ 2 / (2 * variance )))
     // base =  (1 / (sqrt(2 * pi) * variance))
     // return e1*b1*e2*b2.... : e in exponent, b in base
@@ -106,17 +106,19 @@ namespace nbc4gpu {
                               boost::compute::lambda::_1
                                   - boost::compute::lambda::_2,
                               queue_);
+    // Note : x - avg
     boost::compute::transform(recordVector.begin(),
                               recordVector.end(),
                               recordVector.begin(),
-                              1.0 / (boost::compute::lambda::_1 * 2.0),
+                              -1.0 * (boost::compute::lambda::_1 * boost::compute::lambda::_1),
                               queue_);
+    // Note : -(x - avg)^2
     fVar.wait();
     boost::compute::transform(recordVector.begin(),
                               recordVector.end(),
                               varianceVector.begin(),
                               recordVector.begin(),
-                              (-boost::compute::lambda::_1)
+                              boost::compute::lambda::_1
                                   / (boost::compute::lambda::_2 * 2.0),
                               queue_);
     // Note: RecordVector has -((x-avg)^ 2 / (2 * variance )) values after
