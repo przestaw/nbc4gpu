@@ -1,12 +1,12 @@
 //
 // Created by przestaw on 20.10.2020.
 //
-#include <project_defines.h>
+#include <Defines.h>
 DIAGNOSTIC_PUSH
 #include <boost/compute.hpp>
 DIAGNOSTIC_POP
 #include "classifier.h"
-#include <error/exeception.h>
+#include <error/Execeptions.h>
 
 using namespace boost::compute;
 

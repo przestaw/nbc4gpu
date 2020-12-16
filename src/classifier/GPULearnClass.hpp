@@ -5,9 +5,9 @@
 #ifndef NBC4GPU_GPULEARNCLASS_HPP
 #define NBC4GPU_GPULEARNCLASS_HPP
 
+#include <Defines.h>
 #include <classifier/GPULearnColumn.hpp>
 #include <mutex>
-#include <project_defines.h>
 
 namespace nbc4gpu {
   template <typename ValueType> class GPULearnClass {

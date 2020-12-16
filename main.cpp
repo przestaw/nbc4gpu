@@ -1,8 +1,8 @@
+#include <Defines.h>
 #include <boost/program_options.hpp>
-#include <error/exeception.h>
+#include <error/Execeptions.h>
 #include <iostream>
 #include <optional>
-#include <project_defines.h>
 #include <utility>
 // Boost.compute has a lot of errors detected by Clang/GCC
 DIAGNOSTIC_PUSH

@@ -5,7 +5,8 @@
 #ifndef NBC4GPU_GPULEARNCOLUMN_HPP
 #define NBC4GPU_GPULEARNCOLUMN_HPP
 
-#include <project_defines.h>
+#include <Defines.h>
+#include <error/Execeptions.h>
 DIAGNOSTIC_PUSH
 #include <boost/compute/algorithm/accumulate.hpp>
 #include <boost/compute/algorithm/transform.hpp>
@@ -67,6 +68,10 @@ namespace nbc4gpu {
   template <typename ValueType>
   typename GPULearnColumn<ValueType>::AvgAndVariance
   GPULearnColumn<ValueType>::learn() {
+    if(col_.empty()){
+      throw nbc4gpu::error::ZeroValuesProvided(
+          " column summary");
+    }
     // transfer the values to the device
     boost::compute::vector<ValueType> avgVector(col_.size(), queue_.get_context());
     boost::compute::future<void> fAvg = boost::compute::copy_async(
@@ -77,7 +82,7 @@ namespace nbc4gpu {
     boost::compute::future<void> fStdDev = boost::compute::copy_async(
         col_.begin(), col_.end(), varianceVector.begin(), queue_);
 
-    double avg = 0;
+    ValueType avg = 0.0;
     fAvg.wait(); // Wait for data to be copied
 
     boost::compute::reduce(avgVector.begin(), avgVector.end(), &avg, queue_);
@@ -97,7 +102,7 @@ namespace nbc4gpu {
                                   * boost::compute::lambda::_1,
                               queue_);
 
-    double variance = 0;
+    ValueType variance = 0.0;
     boost::compute::reduce(
         varianceVector.begin(), varianceVector.end(), &variance, queue_);
     variance = variance * (1 / static_cast<ValueType>(col_.size() - 1));

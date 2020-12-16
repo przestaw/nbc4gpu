@@ -34,6 +34,12 @@ namespace nbc4gpu {
       explicit MismatchedSize(const std::string &desc)
           : RuntimeException("Mismatched size of arguments: " + desc) {}
     };
+
+    class ZeroValuesProvided : public RuntimeException {
+    public:
+      explicit ZeroValuesProvided(const std::string &desc)
+          : RuntimeException("Zero values provided for : " + desc) {}
+    };
   } // namespace error
 } // namespace nbc4gpu
 

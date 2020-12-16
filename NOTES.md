@@ -16,3 +16,6 @@
 
 - Błędy kompilacji dynamiczne [riuntime] w przypadku użytkowania liczb ujemnych ? [brak szczegółowych informacji o powodach wystąpienia, brak info w dokumentacji]
 - Dostępność w zasadzie jedynie pobierznej dokumentacji zaimplementowanych makr [kompilowanych do openCl jak transform, reduce, accumulate]
+    - https://www.boost.org/doc/libs/1_65_1/libs/compute/doc/html/boost_compute/reference.html
+    - przykłady użycia najczęściej są pustymi ramkami, brak informacji o wymogach początkowych
+    - funkcje wbudowane jak "+" "-" "*" "exp" nie są przedstawione w dokumentacji
