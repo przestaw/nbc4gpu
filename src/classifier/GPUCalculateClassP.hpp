@@ -17,7 +17,7 @@ DIAGNOSTIC_POP
 #include <classifier/GPULearnClass.hpp>
 
 namespace nbc4gpu {
-  template <typename ValueType, typename PropabilityType>
+  template <typename ValueType>
   class GPUCalculateClassP {
   public:
     using Statistics = typename GPULearnClass<ValueType>::Statistics;
@@ -35,7 +35,7 @@ namespace nbc4gpu {
      * Calculates propability of record given in a constructor
      * @return propability
      */
-    PropabilityType operator()(const Record& record);
+    ValueType operator()(const Record& record);
 
   private:
     ValueType calcPropability(const Record& record);
@@ -44,19 +44,19 @@ namespace nbc4gpu {
     boost::compute::command_queue& queue_;
   };
 
-  template <typename ValueType, typename PropabilityType>
-  GPUCalculateClassP<ValueType, PropabilityType>::GPUCalculateClassP(
+  template <typename ValueType>
+  GPUCalculateClassP<ValueType>::GPUCalculateClassP(
       GPUCalculateClassP::Statistics statistics,
       boost::compute::command_queue& queue)
       : statistics_(statistics), queue_(queue) {
-    if(statistics_.empty()){
+    if (statistics_.empty()) {
       throw nbc4gpu::error::ZeroValuesProvided(
           " class Propability calculation");
     }
   }
 
-  template <typename ValueType, typename PropabilityType>
-  PropabilityType GPUCalculateClassP<ValueType, PropabilityType>::operator()(
+  template <typename ValueType>
+  ValueType GPUCalculateClassP<ValueType>::operator()(
       const Record& record) {
     if (record.size() != statistics_.size()) {
       throw nbc4gpu::error::MismatchedSize(
@@ -65,12 +65,12 @@ namespace nbc4gpu {
     return calcPropability(record);
   }
 
-  template <typename ValueType, typename PropabilityType>
-  ValueType GPUCalculateClassP<ValueType, PropabilityType>::calcPropability(
+  template <typename ValueType>
+  ValueType GPUCalculateClassP<ValueType>::calcPropability(
       const Record& record) {
     static const ValueType sqr2pi = sqrt(2 * 3.14159265);
     // exponent = exp(-((x-avg)^ 2 / (2 * variance )))
-    // base =  (1 / (sqrt(2 * pi) * variance))
+    // base =  (1 / (sqrt(2 * pi) * sqrt(variance)))
     // return e1*b1*e2*b2.... : e in exponent, b in base
 
     // 1. transfer record, avg & means to device
@@ -107,53 +107,43 @@ namespace nbc4gpu {
                                   - boost::compute::lambda::_2,
                               queue_);
     // Note : x - avg
-    boost::compute::transform(recordVector.begin(),
-                              recordVector.end(),
-                              recordVector.begin(),
-                              -1.0 * (boost::compute::lambda::_1 * boost::compute::lambda::_1),
-                              queue_);
+
+    boost::compute::transform(
+        recordVector.begin(),
+        recordVector.end(),
+        recordVector.begin(),
+        -1.0 * (boost::compute::lambda::_1 * boost::compute::lambda::_1),
+        queue_);
     // Note : -(x - avg)^2
+
     fVar.wait();
     boost::compute::transform(recordVector.begin(),
                               recordVector.end(),
                               varianceVector.begin(),
                               recordVector.begin(),
-                              boost::compute::lambda::_1
-                                  / (boost::compute::lambda::_2 * 2.0),
-                              queue_);
-    // Note: RecordVector has -((x-avg)^ 2 / (2 * variance )) values after
-    // operation above
-
-    boost::compute::transform(recordVector.begin(),
-                              recordVector.end(),
-                              recordVector.begin(),
-                              exp(boost::compute::lambda::_1),
+                              exp( boost::compute::lambda::_1
+                                  / (2.0 * boost::compute::lambda::_2)),
                               queue_);
     // Note : uses builtin function boost::compute::exp<ValueType(ValueType)>()
     //        wrapped using BOOST_COMPUTE_LAMBDA_WRAP_UNARY_FUNCTION_T
 
-    // 2. calc base
-    boost::compute::transform(varianceVector.begin(),
-                              varianceVector.end(),
-                              varianceVector.begin(),
-                              1.0 / (boost::compute::lambda::_1 * sqr2pi),
-                              queue_);
 
-    // Note: varianceVector has 1/(variance*sqr2pi) values after operation above
-
-    // 3. summarize
-    // 3.1 multiply all base and exponent values
     boost::compute::transform(recordVector.begin(),
                               recordVector.end(),
                               varianceVector.begin(),
                               recordVector.begin(),
                               boost::compute::lambda::_1
-                                  * boost::compute::lambda::_2,
+                                  / (sqrt(boost::compute::lambda::_2) * sqr2pi),
                               queue_);
 
-    ValueType propability = 0.0;
-    boost::compute::reduce(
-        recordVector.begin(), recordVector.end(), &propability, queue_);
+    // 3. summarize
+    ValueType propability = 1.0;
+    boost::compute::reduce(recordVector.begin(),
+                           recordVector.end(),
+                           &propability,
+                           //(boost::compute::multiplies<ValueType>()),
+                           boost::compute::lambda::_1 * boost::compute::lambda::_2,
+                           queue_);
 
     // 4. return propability
     return propability;
