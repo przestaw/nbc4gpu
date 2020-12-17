@@ -19,3 +19,8 @@
     - https://www.boost.org/doc/libs/1_65_1/libs/compute/doc/html/boost_compute/reference.html
     - przykłady użycia najczęściej są pustymi ramkami, brak informacji o wymogach początkowych
     - funkcje wbudowane jak "+" "-" "*" "exp" nie są przedstawione w dokumentacji
+    
+    
+### prezentacja
+
+https://raw.githubusercontent.com/boostcon/cppnow_presentations_2015/master/files/Boost.ComputeCxxNow2015.pdf
