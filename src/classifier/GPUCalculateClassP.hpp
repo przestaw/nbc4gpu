@@ -17,8 +17,7 @@ DIAGNOSTIC_POP
 #include <classifier/GPULearnClass.hpp>
 
 namespace nbc4gpu {
-  template <typename ValueType>
-  class GPUCalculateClassP {
+  template <typename ValueType> class GPUCalculateClassP {
   public:
     using Statistics = typename GPULearnClass<ValueType>::Statistics;
     using Record     = std::vector<ValueType>;
@@ -26,9 +25,11 @@ namespace nbc4gpu {
     /**
      * Constructor
      * @param statistics - statistics of a class values
+     * @param classId - class identifer value
      * @param queue - device queue
      */
     GPUCalculateClassP(Statistics statistics,
+                       ValueType classId,
                        boost::compute::command_queue& queue);
 
     /**
@@ -37,9 +38,15 @@ namespace nbc4gpu {
      */
     ValueType operator()(const Record& record);
 
+    /**
+     * Getter for classId
+     * @return class identifier
+     */
+    inline const ValueType getClassId() const { return classId_; }
+
   private:
     ValueType calcPropability(const Record& record);
-
+    ValueType classId_;
     Statistics statistics_;
     boost::compute::command_queue& queue_;
   };
@@ -47,8 +54,9 @@ namespace nbc4gpu {
   template <typename ValueType>
   GPUCalculateClassP<ValueType>::GPUCalculateClassP(
       GPUCalculateClassP::Statistics statistics,
+      ValueType classId,
       boost::compute::command_queue& queue)
-      : statistics_(statistics), queue_(queue) {
+      : classId_(classId), statistics_(statistics), queue_(queue) {
     if (statistics_.empty()) {
       throw nbc4gpu::error::ZeroValuesProvided(
           " class Propability calculation");
@@ -56,8 +64,7 @@ namespace nbc4gpu {
   }
 
   template <typename ValueType>
-  ValueType GPUCalculateClassP<ValueType>::operator()(
-      const Record& record) {
+  ValueType GPUCalculateClassP<ValueType>::operator()(const Record& record) {
     if (record.size() != statistics_.size()) {
       throw nbc4gpu::error::MismatchedSize(
           " record and dataset have diffrent sizes of columns");
@@ -66,8 +73,8 @@ namespace nbc4gpu {
   }
 
   template <typename ValueType>
-  ValueType GPUCalculateClassP<ValueType>::calcPropability(
-      const Record& record) {
+  ValueType
+  GPUCalculateClassP<ValueType>::calcPropability(const Record& record) {
     static const ValueType sqr2pi = sqrt(2 * 3.14159265);
     // exponent = exp(-((x-avg)^ 2 / (2 * variance )))
     // base =  (1 / (sqrt(2 * pi) * sqrt(variance)))
@@ -117,16 +124,15 @@ namespace nbc4gpu {
     // Note : -(x - avg)^2
 
     fVar.wait();
-    boost::compute::transform(recordVector.begin(),
-                              recordVector.end(),
-                              varianceVector.begin(),
-                              recordVector.begin(),
-                              exp( boost::compute::lambda::_1
-                                  / (2.0 * boost::compute::lambda::_2)),
-                              queue_);
+    boost::compute::transform(
+        recordVector.begin(),
+        recordVector.end(),
+        varianceVector.begin(),
+        recordVector.begin(),
+        exp(boost::compute::lambda::_1 / (2.0 * boost::compute::lambda::_2)),
+        queue_);
     // Note : uses builtin function boost::compute::exp<ValueType(ValueType)>()
     //        wrapped using BOOST_COMPUTE_LAMBDA_WRAP_UNARY_FUNCTION_T
-
 
     boost::compute::transform(recordVector.begin(),
                               recordVector.end(),
@@ -142,7 +148,8 @@ namespace nbc4gpu {
                            recordVector.end(),
                            &propability,
                            //(boost::compute::multiplies<ValueType>()),
-                           boost::compute::lambda::_1 * boost::compute::lambda::_2,
+                           boost::compute::lambda::_1
+                               * boost::compute::lambda::_2,
                            queue_);
 
     // 4. return propability

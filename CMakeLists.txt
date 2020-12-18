@@ -7,7 +7,6 @@ project(${PROJECT_NAME})
 set(PROJECT_DESCRIPTION "naive bayes classifier for GPU")
 
 set(EXECUTABLE ${PROJECT_NAME}-program)
-set(LIBRARY ${PROJECT_NAME}-lib)
 set(TEST ${PROJECT_NAME}-test)
 
 # Add custom cmake modules
@@ -110,13 +109,8 @@ file(GLOB_RECURSE TEST_SRC ${PROJECT_SOURCE_DIR}/test/*.cpp)
 # Include src and test for library and test-check
 add_subdirectory("test")
 
-# library
-add_library(${LIBRARY} ${LIB_SRC} ${LIB_INC} ${LIB_TMP})
-
 # Program executable
-add_executable(${EXECUTABLE} main.cpp)
-add_dependencies(${EXECUTABLE} ${LIBRARY})
-target_link_libraries(${EXECUTABLE} ${LIBRARY})
+add_executable(${EXECUTABLE} main.cpp ${LIB_TMP})
 target_link_libraries(${EXECUTABLE} ${EXTERNAL_LIBS})
 
 # Clang Format

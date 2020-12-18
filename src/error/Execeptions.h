@@ -40,6 +40,12 @@ namespace nbc4gpu {
       explicit ZeroValuesProvided(const std::string &desc)
           : RuntimeException("Zero values provided for : " + desc) {}
     };
+
+    class NotLearned : public RuntimeException {
+    public:
+      explicit NotLearned()
+          : RuntimeException("Classifier is not learned") {}
+    };
   } // namespace error
 } // namespace nbc4gpu
 
