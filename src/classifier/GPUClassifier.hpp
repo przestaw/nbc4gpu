@@ -55,6 +55,12 @@ namespace nbc4gpu {
      */
     Probability calculateMostProbableClass(Record record);
 
+    /**
+     * Reset classifier and insert new data
+     * @param fullDataset dataset in form of column vectors divided by classes
+     */
+    void insertNewDataset(FullDataset fullDataset);
+
   private:
     std::mutex guard;
     bool learned;
@@ -97,20 +103,23 @@ namespace nbc4gpu {
   GPUClassifier<ValueType>::calculateProbabilities(
       GPUClassifier::Record record) {
     if (learned) {
-      std::vector<typename GPUClassifier<ValueType>::Probability> returnVec;
-      for (auto &it : learnedP) {
-        returnVec.emplace_back(it.operator()(record), it.getClassId());
+      std::unique_lock lock(guard);
+      if(learned){
+        std::vector<typename GPUClassifier<ValueType>::Probability> returnVec;
+        for (auto &it : learnedP) {
+          returnVec.emplace_back(it.operator()(record), it.getClassId());
+        }
+        return returnVec;
       }
-      return returnVec;
-    } else {
-      throw nbc4gpu::error::NotLearned();
     }
+    throw nbc4gpu::error::NotLearned();
   }
 
   template <typename ValueType>
   typename GPUClassifier<ValueType>::Probability
   GPUClassifier<ValueType>::calculateMostProbableClass(
       GPUClassifier::Record record) {
+    // note: wraps calculateProbabilities method
     auto prob = calculateProbabilities(std::move(record));
     auto max = std::max_element(
         prob.begin(), prob.end(),
@@ -125,6 +134,19 @@ namespace nbc4gpu {
     }
   }
 
+  template <typename ValueType>
+  void GPUClassifier<ValueType>::insertNewDataset(
+      GPUClassifier<ValueType>::FullDataset fullDataset) {
+    std::unique_lock lock(guard);
+    // reset
+    learned = false;
+    learnedP.clear();
+    learn.clear();
+    // insert new dataset
+    for (ClassDataset &it : fullDataset) {
+      learn.emplace_back(it.second, it.first, queue);
+    }
+  }
 } // namespace nbc4gpu
 
 #endif // NBC4GPU_GPUCLASSIFIER_H

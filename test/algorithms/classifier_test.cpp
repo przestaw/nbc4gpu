@@ -47,6 +47,52 @@ BOOST_AUTO_TEST_CASE(PrecalculatedTestTest_Size1SingleProb) {
   BOOST_CHECK_CLOSE(ret.first, 0.3183, 0.1);
 }
 
+BOOST_AUTO_TEST_CASE(PrecalculatedTestTest_Size1_NewDatasetThrows) {
+  boost::compute::device device = boost::compute::system::default_device();
+  boost::compute::context context(device);
+  boost::compute::command_queue queue(context, device);
+
+  nbc4gpu::GPUClassifier<float>::FullDataset data = {
+      {1.0, {{1.0, 2.0}, {2.0, 1.0}}}};
+  auto classifier = nbc4gpu::GPUClassifier<float>(data);
+  classifier.learnClasses();
+
+  auto ret = classifier.calculateMostProbableClass({1.5, 1.5});
+
+  BOOST_CHECK_EQUAL(ret.second, 1.0);
+  BOOST_CHECK_CLOSE(ret.first, 0.3183, 0.1);
+
+  classifier.insertNewDataset({});
+  BOOST_CHECK_THROW((classifier.calculateProbabilities({})),
+                    nbc4gpu::error::NotLearned);
+}
+
+BOOST_AUTO_TEST_CASE(PrecalculatedTestTest_Size1_NewDatasetWorks) {
+  boost::compute::device device = boost::compute::system::default_device();
+  boost::compute::context context(device);
+  boost::compute::command_queue queue(context, device);
+
+  nbc4gpu::GPUClassifier<float>::FullDataset data1 = {
+      {1.0, {{1.0, 2.0}, {2.0, 1.0}}}};
+  auto classifier = nbc4gpu::GPUClassifier<float>(data1);
+  classifier.learnClasses();
+
+  auto ret = classifier.calculateMostProbableClass({1.5, 1.5});
+
+  BOOST_CHECK_EQUAL(ret.second, 1.0);
+  BOOST_CHECK_CLOSE(ret.first, 0.3183, 0.1);
+
+  nbc4gpu::GPUClassifier<float>::FullDataset data2 = {
+      {1.0, {{1.0, 2.0}, {2.0, 1.0}}}, {2.0, {{4.0, 3.0}, {3.0, 4.0}}}};
+  classifier.insertNewDataset(data2);
+  classifier.learnClasses();
+
+  ret = classifier.calculateMostProbableClass({3.5, 3.5});
+
+  BOOST_CHECK_EQUAL(ret.second, 2.0);
+  BOOST_CHECK_CLOSE(ret.first, 0.3183, 0.1);
+}
+
 BOOST_AUTO_TEST_CASE(PrecalculatedTestTest_Size1MultiProb) {
   boost::compute::device device = boost::compute::system::default_device();
   boost::compute::context context(device);
@@ -188,6 +234,52 @@ BOOST_AUTO_TEST_CASE(ThrowTestTest_Size1_double) {
   auto classifier = nbc4gpu::GPUClassifier<double>(data);
   BOOST_CHECK_THROW((classifier.calculateProbabilities({})),
                     nbc4gpu::error::NotLearned);
+}
+
+BOOST_AUTO_TEST_CASE(PrecalculatedTestTest_Size1_NewDatasetThrows_double) {
+  boost::compute::device device = boost::compute::system::default_device();
+  boost::compute::context context(device);
+  boost::compute::command_queue queue(context, device);
+
+  nbc4gpu::GPUClassifier<double>::FullDataset data = {
+      {1.0, {{1.0, 2.0}, {2.0, 1.0}}}};
+  auto classifier = nbc4gpu::GPUClassifier<double>(data);
+  classifier.learnClasses();
+
+  auto ret = classifier.calculateMostProbableClass({1.5, 1.5});
+
+  BOOST_CHECK_EQUAL(ret.second, 1.0);
+  BOOST_CHECK_CLOSE(ret.first, 0.3183, 0.1);
+
+  classifier.insertNewDataset({});
+  BOOST_CHECK_THROW((classifier.calculateProbabilities({})),
+                    nbc4gpu::error::NotLearned);
+}
+
+BOOST_AUTO_TEST_CASE(PrecalculatedTestTest_Size1_NewDatasetWorks_double) {
+  boost::compute::device device = boost::compute::system::default_device();
+  boost::compute::context context(device);
+  boost::compute::command_queue queue(context, device);
+
+  nbc4gpu::GPUClassifier<double>::FullDataset data1 = {
+      {1.0, {{1.0, 2.0}, {2.0, 1.0}}}};
+  auto classifier = nbc4gpu::GPUClassifier<double>(data1);
+  classifier.learnClasses();
+
+  auto ret = classifier.calculateMostProbableClass({1.5, 1.5});
+
+  BOOST_CHECK_EQUAL(ret.second, 1.0);
+  BOOST_CHECK_CLOSE(ret.first, 0.3183, 0.1);
+
+  nbc4gpu::GPUClassifier<double>::FullDataset data2 = {
+      {1.0, {{1.0, 2.0}, {2.0, 1.0}}}, {2.0, {{4.0, 3.0}, {3.0, 4.0}}}};
+  classifier.insertNewDataset(data2);
+  classifier.learnClasses();
+
+  ret = classifier.calculateMostProbableClass({3.5, 3.5});
+
+  BOOST_CHECK_EQUAL(ret.second, 2.0);
+  BOOST_CHECK_CLOSE(ret.first, 0.3183, 0.1);
 }
 
 BOOST_AUTO_TEST_CASE(PrecalculatedTestTest_Size1SingleProb_double) {
