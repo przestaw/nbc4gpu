@@ -81,4 +81,4 @@ CMakeCache.txt
 /nbc4gpu-*.dir/*
 /nbc4gpu-*.dir/*
 /.vs/nbc4gpu/*
-
+build*

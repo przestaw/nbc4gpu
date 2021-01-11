@@ -7,6 +7,7 @@ project(${PROJECT_NAME})
 set(PROJECT_DESCRIPTION "naive bayes classifier for GPU")
 
 set(EXECUTABLE ${PROJECT_NAME}-program)
+set(PERFORMANCE ${PROJECT_NAME}-performance)
 set(TEST ${PROJECT_NAME}-test)
 
 # Add custom cmake modules
@@ -98,6 +99,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${BOOST_INCLUDE_DIR})
 include_directories(${BoostCompute_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 include_directories(${OpenCL_INCLUDE_DIRS})
+include_directories(generator)
 link_directories(${OpenCL_LIBRARY})
 
 # find source files
@@ -111,7 +113,9 @@ add_subdirectory("test")
 
 # Program executable
 add_executable(${EXECUTABLE} main.cpp ${LIB_TMP})
+add_executable(${PERFORMANCE} performanceTest.cpp generator/generator.hpp ${LIB_TMP})
 target_link_libraries(${EXECUTABLE} ${EXTERNAL_LIBS})
+target_link_libraries(${PERFORMANCE} ${EXTERNAL_LIBS})
 
 # Clang Format
 clangformat_setup(${LIB_SRC} ${LIB_INC} ${TEST_SRC} ${LIB_TMP} main.cpp)
