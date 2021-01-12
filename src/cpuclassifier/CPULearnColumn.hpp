@@ -1,5 +1,5 @@
 //
-// Created by przestaw on 04.12.2020.
+// Created by mateusz
 //
 
 #ifndef NBC4CPU_CPULEARNCOLUMN_HPP
@@ -32,39 +32,35 @@ namespace nbc4cpu {
   };
 
   template <typename ValueType>
-  CPULearnColumn<ValueType>::CPULearnColumn(
-      std::vector<ValueType> &col)
+  CPULearnColumn<ValueType>::CPULearnColumn(std::vector<ValueType> &col)
       : resSet_(false), col_(col) {}
 
   template <typename ValueType>
   typename CPULearnColumn<ValueType>::AvgAndVariance
   CPULearnColumn<ValueType>::operator()() {
-      if (!resSet_) {
-        result_ = learn();
-        resSet_ = true;
-      }
+    if (!resSet_) {
+      result_ = learn();
+      resSet_ = true;
+    }
     return result_;
   }
 
   template <typename ValueType>
   typename CPULearnColumn<ValueType>::AvgAndVariance
   CPULearnColumn<ValueType>::learn() {
-    if(col_.empty()){
-      throw (
-          " column summary");
+    if (col_.empty()) {
+      throw(" column summary");
     }
     ValueType avg = 0.0;
-    for (auto& n : col_)
-        avg += n;
+    for (auto &n : col_) avg += n;
     avg = avg / static_cast<ValueType>(col_.size());
 
     ValueType variance = 0.0;
-    for (auto& n : col_)
-        variance += ((n-avg)*(n-avg));
+    for (auto &n : col_) variance += ((n - avg) * (n - avg));
     variance = variance * (1 / static_cast<ValueType>(col_.size() - 1));
 
     return std::make_pair(avg, variance);
   }
-} // namespace nbc4CPU
+} // namespace nbc4cpu
 
 #endif // NBC4CPU_CPULEARNCOLUMN_HPP

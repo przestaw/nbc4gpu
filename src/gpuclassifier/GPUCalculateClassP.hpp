@@ -14,7 +14,7 @@ DIAGNOSTIC_PUSH
 #include <boost/compute/core.hpp>
 #include <boost/compute/lambda.hpp>
 DIAGNOSTIC_POP
-#include <classifier/GPULearnClass.hpp>
+#include <gpuclassifier/GPULearnClass.hpp>
 
 namespace nbc4gpu {
   template <typename ValueType> class GPUCalculateClassP {

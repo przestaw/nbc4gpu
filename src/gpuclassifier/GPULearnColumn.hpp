@@ -16,7 +16,6 @@ DIAGNOSTIC_PUSH
 DIAGNOSTIC_POP
 #include <mutex>
 
-
 namespace nbc4gpu {
   template <typename ValueType> class GPULearnColumn {
   public:
@@ -68,17 +67,17 @@ namespace nbc4gpu {
   template <typename ValueType>
   typename GPULearnColumn<ValueType>::AvgAndVariance
   GPULearnColumn<ValueType>::learn() {
-    if(col_.empty()){
-      throw nbc4gpu::error::ZeroValuesProvided(
-          " column summary");
+    if (col_.empty()) {
+      throw nbc4gpu::error::ZeroValuesProvided(" column summary");
     }
     // transfer the values to the device
-    boost::compute::vector<ValueType> avgVector(col_.size(), queue_.get_context());
+    boost::compute::vector<ValueType> avgVector(col_.size(),
+                                                queue_.get_context());
     boost::compute::future<void> fAvg = boost::compute::copy_async(
         col_.begin(), col_.end(), avgVector.begin(), queue_);
     // reduce is destructive, need to copy twice
     boost::compute::vector<ValueType> varianceVector(col_.size(),
-                                                queue_.get_context());
+                                                     queue_.get_context());
     boost::compute::future<void> fStdDev = boost::compute::copy_async(
         col_.begin(), col_.end(), varianceVector.begin(), queue_);
 

@@ -8,6 +8,7 @@ set(PROJECT_DESCRIPTION "naive bayes classifier for GPU")
 
 set(EXECUTABLE ${PROJECT_NAME}-program)
 set(PERFORMANCE ${PROJECT_NAME}-performance)
+set(COMPARE nbc4cpu-performance)
 set(TEST ${PROJECT_NAME}-test)
 
 # Add custom cmake modules
@@ -103,22 +104,22 @@ include_directories(generator)
 link_directories(${OpenCL_LIBRARY})
 
 # find source files
-file(GLOB_RECURSE LIB_SRC ${PROJECT_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE LIB_INC ${PROJECT_SOURCE_DIR}/src/*.h)
-file(GLOB_RECURSE LIB_TMP ${PROJECT_SOURCE_DIR}/src/*.hpp)
+file(GLOB_RECURSE LIB_TMP ${PROJECT_SOURCE_DIR}/src/gpuclassifier/*.hpp)
+file(GLOB_RECURSE CPU_TMP ${PROJECT_SOURCE_DIR}/src/cpuclassifier/*.hpp)
 file(GLOB_RECURSE TEST_SRC ${PROJECT_SOURCE_DIR}/test/*.cpp)
 
 # Include src and test for library and test-check
 add_subdirectory("test")
 
 # Program executable
-add_executable(${EXECUTABLE} main.cpp ${LIB_TMP})
-add_executable(${PERFORMANCE} performanceTest.cpp generator/generator.hpp ${LIB_TMP})
-target_link_libraries(${EXECUTABLE} ${EXTERNAL_LIBS})
+add_executable(${COMPARE} performanceTestCPU.cpp src/generator/Generator.hpp ${CPU_TMP})
+add_executable(${PERFORMANCE} performanceTestGPU.cpp src/generator/Generator.hpp ${LIB_TMP})
+target_link_libraries(${COMPARE} ${EXTERNAL_LIBS})
 target_link_libraries(${PERFORMANCE} ${EXTERNAL_LIBS})
 
 # Clang Format
-clangformat_setup(${LIB_SRC} ${LIB_INC} ${TEST_SRC} ${LIB_TMP} main.cpp)
+clangformat_setup(${LIB_SRC} ${LIB_INC} ${TEST_SRC} ${LIB_TMP} ${CPU_TMP} src/generator/Generator.hpp performanceTestCPU.cpp performanceTestGPU.cpp)
 add_custom_target(build-all DEPENDS format-project ${PROGRAM} ${LIB} ${CHECK} ${TEST})
 
 # Doxygen
@@ -145,5 +146,5 @@ if(DOXYGEN_FOUND)
     set(DOXYGEN_GENERATE_HTML YES)
     set(DOXYGEN_GENERATE_MAN NO)
 
-    doxygen_add_docs(${PROJECT_NAME}-doxygen ${LIB_INC} ${LIB_SRC} ${LIB_TMP})
+    doxygen_add_docs(${PROJECT_NAME}-doxygen ${LIB_SRC} ${LIB_INC} ${TEST_SRC} ${LIB_TMP} ${CPU_TMP})
 endif()

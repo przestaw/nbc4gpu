@@ -15,7 +15,7 @@ DIAGNOSTIC_PUSH
 #include <boost/compute/lambda.hpp>
 DIAGNOSTIC_POP
 #include "GPUCalculateClassP.hpp"
-#include <classifier/GPULearnClass.hpp>
+#include <gpuclassifier/GPULearnClass.hpp>
 
 namespace nbc4gpu {
   template <typename ValueType> class GPUClassifier {
@@ -104,7 +104,7 @@ namespace nbc4gpu {
       GPUClassifier::Record record) {
     if (learned) {
       std::unique_lock lock(guard);
-      if(learned){
+      if (learned) {
         std::vector<typename GPUClassifier<ValueType>::Probability> returnVec;
         for (auto &it : learnedP) {
           returnVec.emplace_back(it.operator()(record), it.getClassId());
@@ -121,13 +121,13 @@ namespace nbc4gpu {
       GPUClassifier::Record record) {
     // note: wraps calculateProbabilities method
     auto prob = calculateProbabilities(std::move(record));
-    auto max = std::max_element(
-        prob.begin(), prob.end(),
-    [](const Probability &p1,
-       const Probability &p2) {
-      return p1.first < p2.first;
-    });
-    if (max != prob.end()){
+    auto max =
+        std::max_element(prob.begin(),
+                         prob.end(),
+                         [](const Probability &p1, const Probability &p2) {
+                           return p1.first < p2.first;
+                         });
+    if (max != prob.end()) {
       return *max;
     } else {
       throw nbc4gpu::error::ZeroValuesProvided("No classes in dataset");

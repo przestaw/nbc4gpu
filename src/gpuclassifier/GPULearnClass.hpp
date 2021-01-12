@@ -6,7 +6,7 @@
 #define NBC4GPU_GPULEARNCLASS_HPP
 
 #include <Defines.h>
-#include <classifier/GPULearnColumn.hpp>
+#include <gpuclassifier/GPULearnColumn.hpp>
 #include <mutex>
 
 namespace nbc4gpu {
