@@ -6,7 +6,7 @@
 #define NBC4GPU_GPULEARNCLASS_HPP
 
 #include <Defines.h>
-#include <classifier/GPULearnColumn.hpp>
+#include <gpuclassifier/GPULearnColumn.hpp>
 #include <mutex>
 
 namespace nbc4gpu {
@@ -75,7 +75,6 @@ namespace nbc4gpu {
     if (!calculated) {
       std::unique_lock lock(calculationGuard);
       if (!calculated) {
-        // todo - worker threads?
         workerThread();
         calculated = true;
       }

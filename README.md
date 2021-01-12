@@ -1,19 +1,16 @@
 # Naive Bayes Classifier prototype
 ## *Naive Bayes Classifier on GPU using boost.compute*
 
-### Program Usage
-
-### Options:
-
-## ```ToDo : fill when implemented```
+Project is a header only, template library. Depends on Boost.Compute. 
 
 ### Build instructions
 
 - Project targets :
 
-    - **nbc4gpu-test** - UnitTest made with *boost*
-    - **nbc4gpu-library** - library containing all classes excluding parameters
-    - **nbc4gpu-program** - program available for command line usage
+    - **format-project** - format sources using clang-format and provided .clang-format style
+    - **nbc4gpu-test** - UnitTests made with *boost*
+    - **nbc4gpu-performance** - performance metrics for GPU classifier
+    - **nbc4cpt-performance** - performance metrics for CPU classifier
     - **nbc4gpu-doxygen** - *available if doxygen is present* - generates html documentation 
 
 - Project uses *boost* library for testing and parsing program parameters 

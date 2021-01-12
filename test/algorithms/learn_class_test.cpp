@@ -2,7 +2,7 @@
 // Created by przestaw on 14.12.2020.
 //
 #include <boost/test/unit_test.hpp>
-#include <classifier/GPULearnClass.hpp>
+#include <gpuclassifier/GPULearnClass.hpp>
 
 BOOST_AUTO_TEST_SUITE(nbc4gpu_TestSuite)
 

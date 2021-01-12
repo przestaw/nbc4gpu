@@ -43,8 +43,7 @@ namespace nbc4gpu {
 
     class NotLearned : public RuntimeException {
     public:
-      explicit NotLearned()
-          : RuntimeException("Classifier is not learned") {}
+      explicit NotLearned() : RuntimeException("Classifier is not learned") {}
     };
   } // namespace error
 } // namespace nbc4gpu

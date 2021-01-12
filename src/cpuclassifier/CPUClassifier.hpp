@@ -1,5 +1,5 @@
 //
-// Created by przestaw on 18.12.2020.
+// Created by mateusz
 //
 
 #ifndef NBC4CPU_CPUCLASSIFIER_H
@@ -72,26 +72,26 @@ namespace nbc4cpu {
   }
 
   template <typename ValueType> void CPUClassifier<ValueType>::learnClasses() {
-      if (!learned) {
-        for (auto &it : learn) {
-          learnedP.emplace_back(
-              CalculateClassP(it.operator()(), it.getClassId()));
-        }
-        learned = true;
+    if (!learned) {
+      for (auto &it : learn) {
+        learnedP.emplace_back(
+            CalculateClassP(it.operator()(), it.getClassId()));
       }
+      learned = true;
+    }
   }
 
   template <typename ValueType>
   std::vector<typename CPUClassifier<ValueType>::Probability>
   CPUClassifier<ValueType>::calculateProbabilities(
       CPUClassifier::Record record) {
-      if(learned){
-        std::vector<typename CPUClassifier<ValueType>::Probability> returnVec;
-        for (auto &it : learnedP) {
-          returnVec.emplace_back(it.operator()(record), it.getClassId());
-        }
-        return returnVec;
+    if (learned) {
+      std::vector<typename CPUClassifier<ValueType>::Probability> returnVec;
+      for (auto &it : learnedP) {
+        returnVec.emplace_back(it.operator()(record), it.getClassId());
       }
+      return returnVec;
+    }
     throw "not learned";
   }
 
@@ -101,16 +101,16 @@ namespace nbc4cpu {
       CPUClassifier::Record record) {
     // note: wraps calculateProbabilities method
     auto prob = calculateProbabilities(std::move(record));
-    auto max = std::max_element(
-        prob.begin(), prob.end(),
-    [](const Probability &p1,
-       const Probability &p2) {
-      return p1.first < p2.first;
-    });
-    if (max != prob.end()){
+    auto max =
+        std::max_element(prob.begin(),
+                         prob.end(),
+                         [](const Probability &p1, const Probability &p2) {
+                           return p1.first < p2.first;
+                         });
+    if (max != prob.end()) {
       return *max;
     } else {
-      throw ("No classes in dataset");
+      throw("No classes in dataset");
     }
   }
 

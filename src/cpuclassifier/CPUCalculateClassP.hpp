@@ -1,5 +1,5 @@
 //
-// Created by przestaw on 11.12.2020.
+// Created by mateusz
 //
 
 #ifndef NBC4CPU_CPUCALCULATECLASSP_HPP
@@ -21,8 +21,7 @@ namespace nbc4cpu {
      * @param classId - class identifer value
      * @param queue - device queue
      */
-    CPUCalculateClassP(Statistics statistics,
-                       ValueType classId);
+    CPUCalculateClassP(Statistics statistics, ValueType classId);
 
     /**
      * Calculates propability of record given in a constructor
@@ -76,23 +75,21 @@ namespace nbc4cpu {
     }
     Record computing;
     // 1. Calculate exponent
-    for(int i = 0; i <record.size(); i++)
-        computing.emplace_back(record[i] - avgs[i]);
+    for (int i = 0; i < record.size(); i++)
+      computing.emplace_back(record[i] - avgs[i]);
     // Note : x - avg
-    for(auto &x : computing)
-        x = -1 * (x*x);
+    for (auto& x : computing) x = -1 * (x * x);
     // Note : -(x - avg)^2
 
-    for(int i = 0; i <computing.size(); i++)
-        computing[i] = exp(computing[i]/(2.0 * variances[i]));
+    for (int i = 0; i < computing.size(); i++)
+      computing[i] = exp(computing[i] / (2.0 * variances[i]));
 
-    for(int i = 0; i <computing.size(); i++)
-        computing[i] = computing[i] / (sqrt(variances[i]) * sqr2pi);
+    for (int i = 0; i < computing.size(); i++)
+      computing[i] = computing[i] / (sqrt(variances[i]) * sqr2pi);
 
     // 3. summarize
     ValueType propability = 1.0;
-    for(auto &x : computing)
-        propability = propability * x;
+    for (auto& x : computing) propability = propability * x;
 
     // 4. return propability
     return propability;

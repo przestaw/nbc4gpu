@@ -1,5 +1,5 @@
 //
-// Created by przestaw on 11.12.2020.
+// Created by mateusz
 //
 
 #ifndef NBC4CPU_CPULEARNCLASS_HPP
@@ -26,8 +26,7 @@ namespace nbc4cpu {
      * @param classId - class identifer value
      * @param queue - device queue
      */
-    CPULearnClass(Dataset dataset,
-                  ValueType classId);
+    CPULearnClass(Dataset dataset, ValueType classId);
 
     /**
      * Learns statistics for each column in dataset
@@ -57,17 +56,16 @@ namespace nbc4cpu {
   template <typename ValueType>
   CPULearnClass<ValueType>::CPULearnClass(CPULearnClass::Dataset dataset,
                                           ValueType classId)
-      : dataset_(std::move(dataset)), classId_(classId),
-        unlearned(0), calculated(false), record_(dataset_.size()) {}
+      : dataset_(std::move(dataset)), classId_(classId), unlearned(0),
+        calculated(false), record_(dataset_.size()) {}
 
   template <typename ValueType>
   typename CPULearnClass<ValueType>::Statistics
   CPULearnClass<ValueType>::operator()() {
-      if (!calculated) {
-        // todo - worker threads?
-        workerThread();
-        calculated = true;
-      }
+    if (!calculated) {
+      workerThread();
+      calculated = true;
+    }
     return record_;
   }
 
