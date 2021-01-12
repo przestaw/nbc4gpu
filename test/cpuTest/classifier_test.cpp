@@ -1,5 +1,5 @@
 //
-// Created by przestaw on 18.12.2020.
+// Created by mateusz
 //
 #include <boost/test/unit_test.hpp>
 #include <cpuclassifier/CPUClassifier.hpp>
