@@ -75,7 +75,6 @@ namespace nbc4gpu {
     if (!calculated) {
       std::unique_lock lock(calculationGuard);
       if (!calculated) {
-        // todo - worker threads?
         workerThread();
         calculated = true;
       }
