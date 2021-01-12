@@ -9,7 +9,8 @@ set(PROJECT_DESCRIPTION "naive bayes classifier for GPU")
 set(EXECUTABLE ${PROJECT_NAME}-program)
 set(PERFORMANCE ${PROJECT_NAME}-performance)
 set(COMPARE nbc4cpu-performance)
-set(TEST ${PROJECT_NAME}-test)
+set(TESTGPU ${PROJECT_NAME}-test)
+set(TESTCPU nbc4cpu-test)
 
 # Add custom cmake modules
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake_modules/finders")
@@ -107,10 +108,12 @@ link_directories(${OpenCL_LIBRARY})
 file(GLOB_RECURSE LIB_INC ${PROJECT_SOURCE_DIR}/src/*.h)
 file(GLOB_RECURSE LIB_TMP ${PROJECT_SOURCE_DIR}/src/gpuclassifier/*.hpp)
 file(GLOB_RECURSE CPU_TMP ${PROJECT_SOURCE_DIR}/src/cpuclassifier/*.hpp)
-file(GLOB_RECURSE TEST_SRC ${PROJECT_SOURCE_DIR}/test/*.cpp)
+file(GLOB_RECURSE TEST_GPU_SRC ${PROJECT_SOURCE_DIR}/testgpu/*.cpp)
+file(GLOB_RECURSE TEST_CPU_SRC ${PROJECT_SOURCE_DIR}/testcpu/*.cpp)
 
 # Include src and test for library and test-check
-add_subdirectory("test")
+add_subdirectory("testgpu")
+add_subdirectory("testcpu")
 
 # Program executable
 add_executable(${COMPARE} performanceTestCPU.cpp src/generator/Generator.hpp ${CPU_TMP})
@@ -119,8 +122,8 @@ target_link_libraries(${COMPARE} ${EXTERNAL_LIBS})
 target_link_libraries(${PERFORMANCE} ${EXTERNAL_LIBS})
 
 # Clang Format
-clangformat_setup(${LIB_SRC} ${LIB_INC} ${TEST_SRC} ${LIB_TMP} ${CPU_TMP} src/generator/Generator.hpp performanceTestCPU.cpp performanceTestGPU.cpp)
-add_custom_target(build-all DEPENDS format-project ${PROGRAM} ${LIB} ${CHECK} ${TEST})
+clangformat_setup(${LIB_SRC} ${LIB_INC} ${TEST_GPU_SRC} ${TEST_CPU_SRC} ${LIB_TMP} ${CPU_TMP} src/generator/Generator.hpp performanceTestCPU.cpp performanceTestGPU.cpp)
+add_custom_target(build-all DEPENDS format-project ${PROGRAM} ${LIB} ${CHECK} ${TESTGPU} ${TESTCPU})
 
 # Doxygen
 if(DOXYGEN_FOUND)
@@ -146,5 +149,5 @@ if(DOXYGEN_FOUND)
     set(DOXYGEN_GENERATE_HTML YES)
     set(DOXYGEN_GENERATE_MAN NO)
 
-    doxygen_add_docs(${PROJECT_NAME}-doxygen ${LIB_SRC} ${LIB_INC} ${TEST_SRC} ${LIB_TMP} ${CPU_TMP})
+    doxygen_add_docs(${PROJECT_NAME}-doxygen ${LIB_SRC} ${LIB_INC} ${TEST_GPU_SRC} ${TEST_CPU_SRC} ${LIB_TMP} ${CPU_TMP})
 endif()

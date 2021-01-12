@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(CompareWithCpu_LargeVectorTest) {
   sum       = std::accumulate(vec.begin(), vec.end(), sum);
   float avg = sum / static_cast<float>(vec.size());
 
-  BOOST_CHECK_CLOSE(res.first, avg, 0.1);
+  BOOST_CHECK_CLOSE(res.first, avg, 1);
 
   float variance = 0;
   for (float i : vec) {
@@ -78,7 +78,7 @@ BOOST_AUTO_TEST_CASE(CompareWithCpu_LargeVectorTest) {
   }
   variance = variance / static_cast<float>(vec.size() - 1);
 
-  BOOST_CHECK_CLOSE(res.second, variance, 0.1);
+  BOOST_CHECK_CLOSE(res.second, variance, 1);
 }
 
 BOOST_AUTO_TEST_CASE(PrecalulatedTest_Size0_double) {
@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE(CompareWithCpu_LargeVectorTest_double) {
   sum        = std::accumulate(vec.begin(), vec.end(), sum);
   double avg = sum / static_cast<double>(vec.size());
 
-  BOOST_CHECK_CLOSE(res.first, avg, 0.1);
+  BOOST_CHECK_CLOSE(res.first, avg, 1);
 
   double variance = 0;
   for (double i : vec) {
@@ -151,7 +151,7 @@ BOOST_AUTO_TEST_CASE(CompareWithCpu_LargeVectorTest_double) {
   }
   variance = variance / static_cast<double>(vec.size() - 1);
 
-  BOOST_CHECK_CLOSE(res.second, variance, 0.1);
+  BOOST_CHECK_CLOSE(res.second, variance, 1);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
