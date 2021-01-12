@@ -108,12 +108,11 @@ link_directories(${OpenCL_LIBRARY})
 file(GLOB_RECURSE LIB_INC ${PROJECT_SOURCE_DIR}/src/*.h)
 file(GLOB_RECURSE LIB_TMP ${PROJECT_SOURCE_DIR}/src/gpuclassifier/*.hpp)
 file(GLOB_RECURSE CPU_TMP ${PROJECT_SOURCE_DIR}/src/cpuclassifier/*.hpp)
-file(GLOB_RECURSE TEST_GPU_SRC ${PROJECT_SOURCE_DIR}/testgpu/*.cpp)
-file(GLOB_RECURSE TEST_CPU_SRC ${PROJECT_SOURCE_DIR}/testcpu/*.cpp)
+file(GLOB_RECURSE TEST_GPU_SRC ${PROJECT_SOURCE_DIR}/test/gpuTest/*.cpp)
+file(GLOB_RECURSE TEST_CPU_SRC ${PROJECT_SOURCE_DIR}/test/cpuTest/*.cpp)
 
 # Include src and test for library and test-check
-add_subdirectory("testgpu")
-add_subdirectory("testcpu")
+add_subdirectory("test")
 
 # Program executable
 add_executable(${COMPARE} performanceTestCPU.cpp src/generator/Generator.hpp ${CPU_TMP})

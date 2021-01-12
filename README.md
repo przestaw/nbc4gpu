@@ -8,9 +8,10 @@ Project is a header only, template library. Depends on Boost.Compute.
 - Project targets :
 
     - **format-project** - format sources using clang-format and provided .clang-format style
-    - **nbc4gpu-test** - UnitTests made with *boost*
+    - **nbc4gpu-test** - UnitTests for gpu variant made with *boost*
+    - **nbc4cpu-test** - UnitTests for cpu variant made with *boost*
     - **nbc4gpu-performance** - performance metrics for GPU classifier
-    - **nbc4cpt-performance** - performance metrics for CPU classifier
+    - **nbc4cpu-performance** - performance metrics for CPU classifier
     - **nbc4gpu-doxygen** - *available if doxygen is present* - generates html documentation 
 
 - Project uses *boost* library for testing and parsing program parameters 
